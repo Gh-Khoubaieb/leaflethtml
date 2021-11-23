@@ -106,10 +106,16 @@
     setView: true,
     maxZoom: 16
 }).on('locationfound', (e) => {
-  var radius = e.accuracy / 2;
-  L.marker(e.latlng).addTo(map)
-    .bindPopup("You are within " + radius + " meters from this point").openPopup();
-  L.circle(e.latlng, radius).addTo(map);
+   if (!marker) {
+  marker = L.marker([e.latitude, e.longitude]).addTo(map);
+
+} else {
+
+var radius = e.accuracy / 2;
+  marker = L.marker([e.latitude, e.longitude]).addTo(map);
+  marker.bindPopup("You are within " + radius + " meters from this point").openPopup()
+
+}
 })
 
   /*
