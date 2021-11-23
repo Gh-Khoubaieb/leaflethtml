@@ -1,0 +1,469 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	
+	<title>circuit punique</title>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.Spin/0.1.0/leaflet.spin.js" integrity="sha512-UWhG+MFXmcnuATxXP7+uJNOkvNmBS3yZENjw01A5TF4l+wlep89BwgGVvFo5oI9CfHMHIH8Mdow7RfF99haA/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js" integrity="sha512-Tn2m0TIpgVyTzzvmxLNuqbSJH3JP8jm+Cy3hvHrW7ndTDcJ1w5mBiksqDBb8GpE2ksktFvDB/ykZ0mDpsZj20w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+   
+    <!--Leaflet Routing -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+   
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+    <link data-require="bootstrap-css" data-semver="3.3.6" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css" />
+  <!-- Le fav and touch icons -->
+  <link rel="shortcut icon" href="images/favicon.ico" />
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
+  <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
+  <script data-require="jquery" data-semver="2.1.4" src="https://code.jquery.com/jquery-2.1.4.js"></script>
+    <script data-require="bootstrap" data-semver="3.3.6" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<style>
+		html, body {
+			height: 100%;
+			margin: 0;
+		}
+		#map {
+			width: 100%;
+			height: 100%;
+		}
+    .custom-popup .leaflet-popup-content-wrapper {
+      background:#2c3e50;
+      color:#fff;
+      font-size:16px;
+      line-height:24px;
+      border-radius: 0px;
+      }
+    .custom-popup .leaflet-popup-content-wrapper a {
+        color:rgba(255,255,255,0.1);
+      }
+    .custom-popup .leaflet-popup-tip {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+      }
+      #loader {
+    background: url(spinner.gif);
+    width:20px;
+    height:20px;
+    position:absolute;
+    display:none;
+}
+	</style>
+
+	
+</head>
+<body>
+  <div id="loader"></div>
+  <div id="mymodal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="name">Modal title</h4>
+        </div>
+        <div class="modal-body">
+          <p id="descrip">One fine body&hellip;</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Confirm</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+  
+    <i class="fas fa-baseball"></i>
+  <i class="fas fa-address-card"></i>
+<div id='map'></div>
+
+<script src="https://leafletjs.com/examples/geojson/sample-geojson.js" type="text/javascript"></script>
+<script>
+	var map = L.map('map').setView([36.8471198, 10.3279718], 14);
+ // circle = L.circle([36.8471198, 10.3279718], {radius: 30000})
+ // var featureGroup = L.featureGroup([ circle]).addTo(map)
+ // map.fitBounds(featureGroup.getBounds())
+
+  //**************** Track live position ******************/
+  map.locate({
+    watch: true,
+    setView: true,
+    maxZoom: 16
+}).on('locationfound', (e) => {
+  map.locate({
+    watch: true,
+    setView: true,
+    maxZoom: 16
+}).on('locationfound', (e) => {
+  var radius = e.accuracy / 2;
+  L.marker(e.latlng).addTo(map)
+    .bindPopup("You are within " + radius + " meters from this point").openPopup();
+  L.circle(e.latlng, radius).addTo(map);
+})
+
+  /*
+    if (!marker) {
+  
+        marker = L.marker([e.latitude, e.longitude]).addTo(map);
+        console.log('marker', marker)
+    } else {
+      console.log('e', e)
+      marker = L.marker([e.latitude, e.longitude]).addTo(map);
+       // marker.setLatLng([e.latitude, e.longitude]);
+    }
+    */
+})
+
+/*************************************************************/
+
+	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 20
+      })
+      // Tile type: openstreetmap normal
+      var openstreetmap = L.tileLayer(
+        'http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+      
+        maxZoom: 25,
+    subdomains:['mt0','mt1','mt2','mt3']
+      })
+      
+      // Tile type: openstreetmap Hot
+      var openstreetmapHot = L.tileLayer(
+        'http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+    
+        maxZoom: 20
+      })
+      
+      // Tile type: openstreetmap Osm
+      var openstreetmapOsm = L.tileLayer(
+        'http://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+      
+        maxZoom: 20
+      })
+      
+      /*
+      //Base layers definition and addition
+      var allOptions = {
+        "Open streetmap": openstreetmap,
+        "Open streetmap: Hot": openstreetmapHot,
+        "Open streetmap: Osm": openstreetmapOsm
+      };
+      
+      // Initialize with openstreetmap
+      openstreetmap.addTo(map);
+      
+      // Add baseLayers to map as control layers
+      L.control.layers(allOptions).addTo(map);
+*/
+
+      
+	var myIcon = L.icon({
+  iconUrl: 'http://icon-library.com/images/icon-markers/icon-markers-28.jpg',
+  iconSize: [32, 37],
+  iconAnchor: [16, 37],
+  popupAnchor: [0, -28]
+});
+
+	var someFeatures = {"type":"FeatureCollection","features":[
+{"type":"Feature","geometry":{"type":"Point","coordinates":[10.3231976,36.8412837,0]},"properties":{"name":"Le Tophet","photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Tunisise_Carthage_Tophet_Salambo_04.JPG/1024px-Tunisise_Carthage_Tophet_Salambo_04.JPG"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[10.3259761,36.8445625,0]},"properties":{"name":"Ports puniques","photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Vue_a%C3%A9rienne_de_Salambo_et_Carthage.jpg/1024px-Vue_a%C3%A9rienne_de_Salambo_et_Carthage.jpg"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[10.3287283,36.850983,0]},"properties":{"name":"Quartier Didon","photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Quartier_didon.jpg/800px-Quartier_didon.jpg"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[10.3315867,36.8509532,0]},"properties":{"name":"Quartier Magon","photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Quartier_Magon_2.JPG/800px-Quartier_Magon_2.JPG"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[10.3240861,36.8525184,0]},"properties":{"name":"Acropole colline de Byrsa","photo":"https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/The_Punic_Quarter%2C_Carthage.jpg/800px-The_Punic_Quarter%2C_Carthage.jpg"}}
+]}
+	
+
+	function onEachFeature(feature, layer) {
+		var popupContent =
+    '<b>' +
+          feature.properties.name +
+          '</b>' +
+          '<br>' +
+          ' Visite 3D' +
+          '<span>&emsp;</span>' +
+          '<a href="#">Accéder</a>' +
+          '<br>' +
+          ' Visite 360°' +
+          '<span>&emsp;</span>' +
+          '<a href="#">Accéder</a>' +
+          '<br><br>';
+    ;
+    
+		if (feature.properties && feature.properties.popupContent) {
+			popupContent += feature.properties.popupContent;
+		}
+
+		layer.bindPopup(popupContent);
+        
+      
+	}
+
+	
+
+	
+
+	
+	
+	L.geoJSON(someFeatures, {
+
+		style: function (feature) {
+			return feature.properties && feature.properties.style;
+		},
+
+		
+		//changer style du marker
+		pointToLayer: function(feature, latlng) {
+     //  L.marker(latlng).addTo(map)
+     
+        return new L.marker(latlng, {icon: L.icon({
+  iconUrl: 'ic2.png',
+  iconSize: [22, 30],
+  iconAnchor: [16, 37],
+  popupAnchor: [0, -28]
+})});
+		},
+		onEachFeature: onEachFeature
+		
+	});
+
+	
+
+	var punic = {"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"LineString","coordinates":[[10.3232,36.84128,0],[10.32324,36.84131,0],[10.3233,36.84132,0],[10.32373,36.84121,0],[10.32375,36.84158,0],[10.32374,36.84179,0],[10.3237,36.84199,0],[10.32361,36.84228,0],[10.32369,36.84239,0],[10.32416,36.84325,0],[10.32449,36.84385,0],[10.32483,36.84366,0],[10.32505,36.8435,0],[10.32526,36.84335,0],[10.32533,36.84328,0],[10.32535,36.84329,0],[10.32544,36.84338,0],[10.32563,36.84359,0],[10.32582,36.8438,0],[10.32592,36.84394,0],[10.32597,36.84403,0],[10.32598,36.84406,0],[10.32598,36.84411,0],[10.32596,36.84418,0],[10.32595,36.84419,0],[10.32586,36.8443,0],[10.32582,36.84436,0],[10.32583,36.84442,0],[10.32584,36.84447,0],[10.32587,36.84451,0],[10.32596,36.84455,0],[10.32598,36.84456,0],[10.32596,36.84455,0],[10.32587,36.84451,0],[10.32584,36.84447,0],[10.32583,36.84442,0],[10.32582,36.84436,0],[10.32586,36.8443,0],[10.32595,36.84419,0],[10.32596,36.84418,0],[10.32598,36.84411,0],[10.32598,36.84406,0],[10.32597,36.84403,0],[10.32592,36.84394,0],[10.32582,36.8438,0],[10.32563,36.84359,0],[10.32544,36.84338,0],[10.32535,36.84329,0],[10.32533,36.84328,0],[10.32526,36.84335,0],[10.32505,36.8435,0],[10.32483,36.84366,0],[10.32449,36.84385,0],[10.32437,36.84396,0],[10.32412,36.84421,0],[10.32397,36.84435,0],[10.32362,36.84463,0],[10.32312,36.84488,0],[10.32234,36.84535,0],[10.3225,36.84548,0],[10.32266,36.84561,0],[10.32282,36.84573,0],[10.32287,36.84578,0],[10.32321,36.84616,0],[10.32332,36.84628,0],[10.32343,36.8464,0],[10.32366,36.84665,0],[10.32395,36.84693,0],[10.32413,36.8471,0],[10.32457,36.84754,0],[10.32498,36.84793,0],[10.32546,36.84839,0],[10.3256,36.84853,0],[10.32575,36.84867,0],[10.32589,36.84881,0],[10.32604,36.84895,0],[10.32618,36.84908,0],[10.32624,36.84914,0],[10.32638,36.84928,0],[10.32652,36.84943,0],[10.32658,36.84949,0],[10.32708,36.84999,0],[10.32713,36.85004,0],[10.32724,36.85013,0],[10.32745,36.85034,0],[10.3281,36.85097,0],[10.32831,36.8512,0],[10.32868,36.85101,0],[10.32873,36.85098,0],[10.32906,36.85082,0],[10.32915,36.85078,0],[10.32954,36.85059,0],[10.33003,36.85035,0],[10.33008,36.85032,0],[10.33038,36.85071,0],[10.33055,36.85094,0],[10.33114,36.85065,0],[10.3313,36.85057,0],[10.33142,36.85072,0],[10.33159,36.85095,0],[10.33176,36.85119,0],[10.33189,36.85136,0],[10.33195,36.85144,0],[10.33195,36.85146,0],[10.33195,36.85147,0],[10.33195,36.85149,0],[10.33194,36.85151,0],[10.33191,36.85154,0],[10.33187,36.85156,0],[10.33177,36.85161,0],[10.33158,36.85171,0],[10.33133,36.85183,0],[10.33125,36.85187,0],[10.33038,36.8523,0],[10.32994,36.85251,0],[10.32952,36.85273,0],[10.32921,36.85288,0],[10.32892,36.85302,0],[10.32855,36.8532,0],[10.32842,36.85325,0],[10.32794,36.85346,0],[10.3279,36.85347,0],[10.32758,36.85361,0],[10.32714,36.85379,0],[10.32713,36.8538,0],[10.32632,36.85414,0],[10.32568,36.85441,0],[10.32552,36.85446,0],[10.32517,36.8546,0],[10.32467,36.85482,0],[10.32445,36.8549,0],[10.32428,36.85493,0],[10.32428,36.85481,0],[10.3243,36.85468,0],[10.32437,36.85457,0],[10.32447,36.85445,0],[10.32471,36.85425,0],[10.32497,36.85405,0],[10.3252,36.8539,0],[10.32543,36.85374,0],[10.32549,36.85369,0],[10.32555,36.85363,0],[10.32559,36.85358,0],[10.32564,36.85351,0],[10.32567,36.85348,0],[10.32569,36.85344,0],[10.32571,36.8534,0],[10.32572,36.85337,0],[10.32572,36.85334,0],[10.32572,36.85331,0],[10.32564,36.853,0],[10.3256,36.85289,0],[10.32556,36.85282,0],[10.32548,36.85272,0],[10.32543,36.85266,0],[10.32536,36.8526,0],[10.32524,36.85255,0],[10.32513,36.85251,0],[10.32497,36.85247,0],[10.32479,36.85245,0],[10.32468,36.85246,0],[10.32452,36.85249,0],[10.32437,36.85252,0],[10.32409,36.85252,0]]},"properties":{"name":"circuit punique","tessellate":true}}]};
+
+	L.geoJson(punic, {
+  onEachFeature: function (feature, layer) {
+    
+      layer.setStyle({
+        'color': '#8C3AC6'
+      });
+    layer.bindPopup("le circuit punique dure entre 2 heures et 30 minutes (déplacement entre monuments en voiture) et 4 heures (déplacement entre monuments à pieds");
+  }
+}).addTo(map);
+
+fetch('https://dourbia.herokuapp.com/api/v1/monuments')
+      .then((response) => response.json())
+      .then((responseJson) => {
+       // return responseJson.movies;
+     
+       /*
+       L.Routing.control({
+          waypoints: [
+            L.latLng(el.atitude, el.longitude),
+          ]
+        }).addTo(map);
+
+          console.log("response jasom",mon)
+       L.Routing.control({
+          waypoints: [
+            L.latLng(36.854047, 10.327047),
+            L.latLng(36.853056, 10.323889),
+            L.latLng(36.85868, 10.330449)	
+          ]
+        }).addTo(map);
+*/
+        var mon = []
+        var markersRomaine = [];
+        var markersBizantine = [];
+        var markersPunique = [];
+        var allMarkers= [];
+       responseJson.forEach(el => {
+        
+        var markers =   L.marker([el.latitude, el.longitude])
+        allMarkers.push(markers)
+       // console.log("allMarkers", allMarkers)
+ 
+       
+              switch (el.epoque_1) {
+                case 'romaine':
+
+                    marker =L.marker([el.latitude, el.longitude])
+                    markersRomaine.push(marker);
+                    
+                  break;
+                case 'punique':
+       
+                marker =L.marker([el.latitude, el.longitude])
+                markersPunique.push(marker);
+                  
+                  break;
+                case 'byzantine':
+                
+                    marker = L.marker([el.latitude, el.longitude])
+                    markersBizantine.push(marker);
+                  
+                  break;
+                default:
+                  break;
+              }
+             
+              /******************  Switch epoque  2 ****************************/
+              switch (el.epoque_2) {
+                case 'romaine':
+
+                    marker =L.marker([el.latitude, el.longitude])
+                    markersRomaine.push(marker);
+                    
+                  break;
+                case 'punique':
+       
+                marker =L.marker([el.latitude, el.longitude])
+                markersPunique.push(marker);
+                  
+                  break;
+                case 'byzantine':
+                
+                    marker = L.marker([el.latitude, el.longitude])
+                    markersBizantine.push(marker);
+                  
+                  break;
+                default:
+                  break;
+              }
+
+              /*****************Switch epoque 3 ***************/
+              switch (el.epoque_3) {
+                case 'romaine':
+
+                    marker =L.marker([el.latitude, el.longitude])
+                    markersRomaine.push(marker);
+                    
+                  break;
+                case 'punique':
+       
+                marker =L.marker([el.latitude, el.longitude])
+                markersPunique.push(marker);
+                  
+                  break;
+                case 'byzantine':
+                
+                    marker = L.marker([el.latitude, el.longitude])
+                    markersBizantine.push(marker);
+                  
+                  break;
+                default:
+                  break;
+              }
+
+            groupRoameine = L.layerGroup(markersRomaine);
+            groupBizantique = L.layerGroup(markersBizantine);
+            groupPunisque = L.layerGroup(markersPunique);
+            allMonuments = L.layerGroup(allMarkers);
+           // var sites = L.layerGroup([groupGreen, groupBlue, groupRed]);
+      
+
+
+
+       // var markeur =   L.marker([el.latitude, el.longitude])
+       markers.bindPopup(el.descrip).on('click', onClick);
+       // mon.push([el.latitude,el.longitude])
+      
+        function onClick(e) {
+    console.log("el",  JSON.parse( JSON.stringify(el) ) );
+   // console.log("nom", el.name );
+   // console.log("descrip", el.descrip );
+   console.log("descrip", el.latitude,el.longitude );
+  $('#mymodal').modal('show').animate({top: (window.innerHeight / 2 - 50) + "px"}, 1000);
+  document.getElementById("name").innerHTML = el.name;
+  document.getElementById("descrip").innerHTML = el.descrip;
+    }
+
+    
+       });
+      // console.log("mon", mon );
+      
+          //Base layers definition and addition
+          var allOptions = {
+                "Open streetmap": openstreetmap,
+                "Open streetmap: Hot": openstreetmapHot,
+                "Open streetmap: Osm": openstreetmapOsm
+              };
+              
+              // Initialize with openstreetmap
+              openstreetmap.addTo(map);
+              
+
+             
+
+     // console.log("groupRoameine", groupBizantique );
+      var allSites = {
+        "Circuit Romaine": groupRoameine,
+        "Circuit Bizantine": groupBizantique,
+        "Circuit Punique": groupPunisque,
+        "Cicuit Général": allMonuments
+      };
+      
+            L.control.layers(allOptions,allSites).addTo(map);
+   
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+/*
+
+ axios.get('https://dourbia.herokuapp.com/api/v1/monuments')  
+ .then(function (response) {
+   
+    response.data.forEach(el => {
+     // console.log(el);
+      //L.marker(el.latitude, el.longitude).addTo(map)
+  
+
+//populate map from stops
+
+var markeur =   L.marker([el.latitude, el.longitude])
+        markeur.addTo(map).bindPopup(el.descrip).on('click', onClick);
+        function onClick(e) {
+    console.log("title", el );
+    console.log("nom", el.name );
+    console.log("descrip", el.descrip );
+  
+  $('#mymodal').modal('show').animate({top: (window.innerHeight / 2 - 50) + "px"}, 1000);
+  document.getElementById("name").innerHTML = el.name;
+  document.getElementById("descrip").innerHTML = el.descrip;
+}
+    });
+  })
+  .catch(function (error) {
+    console.log(error);
+  })
+  .then(function () {
+    // always executed
+  });  
+
+*/
+
+//**********************spinner************************//
+/*
+map.spin(true);
+$.ajax({url: 'https://dourbia.herokuapp.com/api/v1/monuments'})
+.done(function() {
+  map.spin(false);
+})
+.error(function () {
+  map.spin(false);
+});
+*/
+</script>
+
+
+
+</body>
+</html>
+
